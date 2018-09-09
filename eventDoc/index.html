@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Event Docs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  
+</head>
+
+<style>
+  body {
+    position: relative;
+  }
+
+  ul.nav-pills {
+    top: 20px;
+    position: fixed;
+  }
+
+  div.col-sm-9 div {
+    height: 150px;
+    padding-top: 30px;
+    /* font-size: 28px; */
+  }
+
+  .header-text {
+    margin: 70px 0px;
+  }
+  a{
+    color:  black;
+  }
+  .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+    color: #673ab7;
+    background-color: transparent;
+    border-left: 3px solid #673ab7;
+}
+  #listen {
+    margin: 40px 0px;
+    padding-left: 10px;
+    color: #fff;
+    background-color: #673ab7;
+    border-radius: 10px;
+  }
+
+  #emit {
+    margin: 40px 0px;
+    padding-left: 10px;
+    color: #fff;
+    background-color: #673ab7;
+    border-radius: 10px;
+
+  }
+
+  #userId {
+    height: 350px;
+  }
+
+  #room-msg {
+    height: 350px;
+  }
+
+  #chat-msg {
+    height: 350px;
+  }
+  #typing-user {
+    height: 250px;
+  }
+  #chatroom-msg {
+    height: 350px;
+  }
+  #create-room{
+    height: 350px;
+  }
+  #error-occurred {
+    height: 250px;
+  }
+
+  #disconnect {
+    height: 300px;
+  }
+
+  #section1 {
+    color: #fff;
+    background-color: #1E88E5;
+  }
+
+  #section2 {
+    color: #fff;
+    background-color: #673ab7;
+  }
+
+  #section3 {
+    color: #fff;
+    background-color: #ff9800;
+  }
+
+  #section41 {
+    color: #fff;
+    background-color: #00bcd4;
+  }
+
+  #section42 {
+    color: #fff;
+    background-color: #009688;
+  }
+
+  @media screen and (max-width: 810px) {
+    #section1,
+    #section2,
+    #section3,
+    #section41,
+    #section42 {
+      margin-left: 150px;
+    }
+  }
+</style>
+</head>
+
+<body data-spy="scroll" data-target="#myScrollspy" data-offset="20">
+
+  <div class="container">
+    <div class="row">
+      <nav class="col-sm-3" id="myScrollspy">
+        <ul class="nav nav-pills nav-stacked">
+          <a href="#listen">
+            <h3>Listen</h3>
+          </a>
+          <li class="active">
+            <a href="#verifyUser">verifyUser event</a>
+          </li>
+          <li>
+            <a href="#online-user-list">online-user-list</a>
+          </li>
+          <li>
+            <a href="#userId">userId</a>
+          </li>
+          <li>
+            <a href="#room-msg">room-msg</a>
+          </li>
+          <li>
+              <a href="#typing-user">typing-user</a>
+          </li>
+          <li>
+            <a href="#error-occurred">error-occurred</a>
+          </li>
+          <li>
+            <a href="#disconnect">disconnect</a>
+          </li>
+          <br>
+          <br>
+          <a href="#emit">
+            <h3>Emit</h3>
+          </a>
+          <li>
+            <a href="#set-user">set-user</a>
+          </li>
+          <li>
+            <a href="#chat-msg">chat-msg</a>
+          </li>
+          <li>
+            <a href="#chatroom-msg">chatroom-msg</a>
+          </li>
+          <li>
+            <a href="#subscribe-room">subscribe-room</a>
+          </li>
+          <li>
+            <a href="#create-room">create-room</a>
+          </li>
+          <li>
+              <a href="#typing">typing</a>
+            </li>
+        </ul>
+      </nav>
+      <div class="col-sm-9">
+        <h1 class="text-center header-text">Events documentation</h1>
+        <div id='listen'>
+          <h2>Events to Listen</h2>
+        </div>
+        <div id="verifyUser">
+          <h3>verifyUser event</h3>
+          <p>This event
+            <b>("verifyUser")</b> has to be listened on the user's end to verify user authentication. user will only be set
+            as online user after verification of authentication token.</p>
+        </div>
+        <div id="online-user-list">
+          <h3>online-user-list event</h3>
+          <p>This event
+            <b>("online-user-list")</b> has to be listened on the user's end to identify all available users that are currently
+            online. All available users can be shown to the user based on which he can start chatting with a user. The output
+            will be an object, object has key as userId and value as full name.</p>
+        </div>
+        <br>
+        <div id="userId">
+          <h3>userId event</h3>
+          <b>This event's name is actually dynamic and refers to the userId of the logged in user.</b>
+          <p>This event
+            <b>("userId")</b> has to be listened to identify an individual chat message that has been received. Example output
+            it as follows:</p>
+          <pre>
+            {
+                chatId: 'unique chat id',
+                message: 'you message',
+                createdOn: date, 
+                receiverId: 'userId of receiver',
+                receiverName: full name of receiver,
+                senderId: 'userId of sender',
+                senderName: 'full name of sender'
+            }
+        </pre>
+          <br>
+        </div>
+        <div id="room-msg">
+          <h3>room-msg event</h3>
+          <p>This event
+            <b>("room-msg")</b> has to be listened to identify a chatroom message that has been received. Example output it
+            as follows:</p>
+          <pre>
+            {
+                  chatId: 'unique chat id',
+                  message: 'you message',
+                  createdOn: date, 
+                  chatRoom: 'chatroom Id',
+                  senderId: 'userId of sender',
+                  senderName: 'full name of sender'
+              }
+          </pre>
+        </div>
+        <div id="typing-user">
+            <h3>typing-user event</h3>
+            <p>This event
+              <b>("typing-user")</b> has to be listened to identify the user chating with is typing. Example output it
+              as follows:</p>
+              <pre>
+              {
+                userId: 'userId',
+                name: 'First name of user'
+              }
+            </pre>
+          </div>
+        <div id="error-occurred">
+          <h3>error-occurred event</h3>
+          <p>This event
+            <b>("error-occurred")</b> has to be listened to identify an error which will occur when the data is not sent properly
+            in the events to be emitted. Example output it as follows:</p>
+          <pre>
+                    {
+                      status: 123,
+                      error: 'error message'
+                  }
+          </pre>
+        </div>
+        <br>
+        <div id="disconnect">
+          <h3>disconnect event (optional)</h3>
+          <p>This event
+            <b>("disconnect")</b> has to be listened, when the user is disconnected to show proper message.</p>
+        </div>
+        <br>
+        <div id='emit'>
+          <h2>Events to emit</h2>
+        </div>
+        <div id="set-user">
+          <h3>set-user event</h3>
+          <p>This event
+            <b>("set-user")</b> has to be emitted when a user comes online. User can only be set as online only after verification
+            of authentication token. Which you have pass here. The following data has to be emitted authentication token</p>
+        </div>
+        <div id="chat-msg">
+          <h3>chat-msg event</h3>
+          <p>This event
+            <b>("chat-msg")</b> has to be emitted to identify an individual chat message that has been send. The following data
+            has to be emitted</p>
+          <pre>
+            {
+                senderName: 'John Doe',
+                senderId: 'userId of sender',
+                receiverName: 'Smith',
+                receiverId: 'userId of receiver',
+                message: 'your chat message',
+                createdOn: date
+                }
+              </pre>
+        </div>
+        <div id="chatroom-msg">
+          <h3>chatroom-msg event</h3>
+          <p>This event
+            <b>("chatroom-msg")</b> has to be emitted to identify a chatroom chat message that has been send. The following
+            data has to be emitted</p>
+          <pre>
+                {
+                  senderName: 'John Doe',
+                  senderId: 'userId of sender',
+                  message: 'your chat message',
+                  chatRoom: 'chatroom Id',
+                  createdOn: date
+                }</pre>
+        </div>
+        <div id="subscribe-room">
+          <h3>subscribe-room event</h3>
+          <p>This event
+            <b>("subscribe-room")</b> has to be emitted to join a chatroom . The following data has to be emitted</p>
+          <pre>
+            {
+             chatRoom: 'chatroom Id',
+            }</pre>
+        </div>
+        <br>
+        <br>
+        <div id="create-room">
+          <h3>create-room event</h3>
+          <p>This event
+            <b>("create-room")</b> has to be emitted to create a new chatroom . The following data has to be emitted</p>
+          <pre>
+                {
+                  roomId: chatroom Id,
+                  roomName : chatroom name,
+                  members: array of userId that will be in chatroom,
+                  admin: userId of the person who creates group,
+                }</pre>
+        </div>
+        <div id="typing">
+            <h3>typing event</h3>
+            <p>This event
+              <b>("typing")</b> has to be emitted when user start typing . The following data has to be emitted</p>
+            <pre>
+                  {
+                    userId: 'userId',
+                    name: 'First name'
+                  }</pre>
+          </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+
+</html>
