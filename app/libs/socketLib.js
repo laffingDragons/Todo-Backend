@@ -28,10 +28,10 @@ let setServer = (server) => {
         // code to verify the user and make him online
 
         socket.on('set-user', (authToken) => {
-            
+
             tokenLib.verifyClaimWithoutSecret(authToken, (err, user) => {
                 if (err) {
-                    
+
                     socket.emit('auth-error', { status: 500, error: 'Please provide correct auth token' })
                 }
                 else {
@@ -42,11 +42,11 @@ let setServer = (server) => {
                     socket.userId = currentUser.userId
                     let fullName = `${currentUser.firstName} ${currentUser.lastName}`
                     console.log(`${fullName} has Logged in successfully`);
-                    
-                    let userObject = {userId:currentUser.userId, fullName: fullName}
+
+                    let userObject = { userId: currentUser.userId, fullName: fullName }
                     allOnlineUsers.push(userObject);
                     console.log(allOnlineUsers);
-                    
+
                     // redisLib.setANewOnlineUserInHash("onlineUsers", key, value, (err, result) => {
                     //     if (err) {
                     //         console.log(`some error occured`, err);
@@ -82,7 +82,7 @@ let setServer = (server) => {
                     socket.room = 'edChat'
                     // joining chat-group room.
                     socket.join(socket.room)
-                    myIo.emit('online-user-list',allOnlineUsers);
+                    myIo.emit('online-user-list', allOnlineUsers);
 
                 }
 
@@ -101,23 +101,23 @@ let setServer = (server) => {
             console.log(socket.userId);
 
 
-            var removeIndex = allOnlineUsers.map(function(user) { return user.userId; }).indexOf(socket.userId);
-            allOnlineUsers.splice(removeIndex,1)
+            var removeIndex = allOnlineUsers.map(function (user) { return user.userId; }).indexOf(socket.userId);
+            allOnlineUsers.splice(removeIndex, 1)
 
             socket.leave(socket.room)
-            socket.to(socket.room).broadcast.emit('online-user-list',allOnlineUsers);
+            socket.to(socket.room).broadcast.emit('online-user-list', allOnlineUsers);
 
-        //     if (socket.userId) {
-        //         redisLib.deleteUserFromHash('onlineUsers', socket.userId)
-        //         redisLib.getAllUsersInHash('onlineUsers', (err, result) => {
-        //             if (err) {
-        //                 console.log(err);
-        //             } else {
-        //                 socket.leave(socket.room)
-        //                 socket.to(socket.room).broadcast.emit('online-user-list', result)
-        //             }
-        //         })
-        //     }
+            //     if (socket.userId) {
+            //         redisLib.deleteUserFromHash('onlineUsers', socket.userId)
+            //         redisLib.getAllUsersInHash('onlineUsers', (err, result) => {
+            //             if (err) {
+            //                 console.log(err);
+            //             } else {
+            //                 socket.leave(socket.room)
+            //                 socket.to(socket.room).broadcast.emit('online-user-list', result)
+            //             }
+            //         })
+            //     }
 
         }) // end of on disconnect
 
@@ -140,7 +140,6 @@ let setServer = (server) => {
 
         socket.on('notify', (data) => {
 
-            console.log("socket chat-msg called")
             data['notifyId'] = shortid.generate()
 
             // event to save chat.
@@ -152,6 +151,25 @@ let setServer = (server) => {
             myIo.emit(data.receiverId, data)
 
         });
+
+
+        socket.on('task-notify', (data) => {
+            console.log('\x1b[36m', data, '\x1b[0m');
+
+            data['notifyId'] = shortid.generate()
+            // event to save chat.
+            setTimeout(function () {
+                eventEmitter.emit('save-notify', data);
+
+            }, 2000)
+
+            socket.room = 'edChat'
+            // joining chat-group room.
+            socket.join(socket.room)
+            socket.to(socket.room).broadcast.emit('task-changes', data)
+
+        })
+
 
         // Get chatroom msg
         // socket.on('chatroom-msg', (data) => {

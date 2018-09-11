@@ -14,33 +14,10 @@ let getAllTask = (req, res) => {
 
     let count
 
-    TaskModel.count().exec((err, result)=>{
-        if (err) {
-            console.log(err)
-            logger.error(err.message, 'TaskController: getAllTask', 10)
-            let apiResponse = response.generate(true, 'Failed To Find COunt of Task Details', 500, null)
-            res.send(apiResponse)
-        } else if (check.isEmpty(result)) {
-            logger.info('No Task Found', 'TaskController: getAllTask')
-            let apiResponse = response.generate(true, 'No Count Task Found', 404, null)
-            res.send(apiResponse)
-        } else {
 
-            count = result;
-        }
-
-    })
-    
-    let perPage = 9
-    let page = req.params.page || 1
-
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%",perPage,page);
-    
     TaskModel.find()
-        // .select(' -__v -_id')
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
-        // .lean()
+        .select(' -__v -_id')
+        .lean()
         .exec((err, result) => {
             if (err) {
                 console.log(err)
@@ -86,21 +63,72 @@ let getSingleTask = (req, res) => {
 //Deleting a Task
 let deleteTask = (req, res) => {
 
-    TaskModel.findOneAndRemove({ 'taskId': req.params.taskId }).select(' -__v -_id').exec((err, result) => {
-        if (err) {
-            console.log(err)
-            logger.error(err.message, 'taskController: deletetask', 10)
-            let apiResponse = response.generate(true, 'Failed To delete task', 500, null)
-            res.send(apiResponse)
-        } else if (check.isEmpty(result)) {
-            logger.info('No Task Found', 'TaskController: deleteTask')
-            let apiResponse = response.generate(true, 'No Task Found', 404, null)
-            res.send(apiResponse)
-        } else {
-            let apiResponse = response.generate(false, 'Deleted the Task successfully', 200, result)
-            res.send(apiResponse)
-        }
-    });// end Task model find and remove
+    let options = req.body;
+    let friends = req.body.friends
+    options.tasks = JSON.parse(req.body.tasks)
+
+
+    TaskModel.findOne({ 'taskId': req.params.taskId })
+        .select('-__v -_id')
+        .lean()
+        .exec((err, result) => {
+            if (err) {
+                console.log(err)
+                logger.error(err.message, 'TaskController: getSingleTask', 10)
+                let apiResponse = response.generate(true, 'Failed To Find Task Details for saving history', 500, null)
+                res.send(apiResponse)
+            } else if (check.isEmpty(result)) {
+                logger.info('No Task Found', 'TaskController:getSingleTask')
+                let apiResponse = response.generate(true, 'No Task Found', 404, null)
+                res.send(apiResponse)
+            } else {
+
+                //saving task for Undo purposes
+                let newHistory = new HistoryModel({
+
+                    historyId: shortid.generate(),
+                    usersFriends: friends.split(","),
+                    data: JSON.stringify(result),
+                    createdOn: options.modifiedOn
+                })
+
+                // saving the new hisstory
+                newHistory.save((err, newHistory) => {
+                    if (err) {
+
+                        console.log(err)
+                        logger.error(err.message, 'taskController: EditTask', 10)
+                        let apiResponse = response.generate(true, 'Failed to Save History', 500, null)
+                        res.send(apiResponse);
+
+                    } else {
+
+
+                        //Real  Delete task starts here
+                        TaskModel.findOneAndRemove({ 'taskId': req.params.taskId }, options).select('-__v -_id').exec((err, result) => {
+                            if (err) {
+                                console.log(err)
+                                logger.error(err.message, 'taskController:editTask', 10)
+                                let apiResponse = response.generate(true, 'Failed To edit Task details', 500, null)
+                                res.send(apiResponse)
+                            } else if (check.isEmpty(result)) {
+                                logger.info('No Task Found', 'TaskController: editTask')
+                                let apiResponse = response.generate(true, 'No Task Found', 404, null)
+                                res.send(apiResponse)
+                            } else {
+                                let apiResponse = response.generate(false, 'Task deleted successfully', 200, result)
+                                res.send(apiResponse)
+                            }
+                        });// end Task model delete
+
+
+
+                    }
+                })
+            }
+        })
+
+
 }
 
 
@@ -126,10 +154,10 @@ let editTask = (req, res) => {
                 let apiResponse = response.generate(true, 'No Task Found', 404, null)
                 res.send(apiResponse)
             } else {
-                
+
                 //saving task for Undo purposes
                 let newHistory = new HistoryModel({
-                    
+
                     historyId: shortid.generate(),
                     usersFriends: friends.split(","),
                     data: JSON.stringify(result),
@@ -237,41 +265,73 @@ let undoTask = (req, res) => {
 
                     } else {
                         data = retrievedHistory
-                        console.log(">>>>>>>>>>>>>>",retrievedHistory);
-                        
+
                         resolve(retrievedHistory);
+
                     }
                 })
 
         })
     }
 
-    let editDatabase =()=>{
+    let editDatabase = () => {
         return new Promise((resolve, reject) => {
             let undoObj = JSON.parse(data.data)
-            
-             //Real  edit task starts here
-             TaskModel.update({ 'taskId': undoObj.taskId }, undoObj).select('-__v -_id').exec((err, result) => {
+
+            //Real  edit task starts here
+            TaskModel.update({ 'taskId': undoObj.taskId }, undoObj).select('-__v -_id').exec((err, result) => {
+
                 if (err) {
+
                     console.log(err)
                     logger.error(err.message, 'taskController:editTask', 10)
                     let apiResponse = response.generate(true, 'Failed To edit Task details', 500, null)
                     reject(apiResponse)
-                } else if (check.isEmpty(result)) {
-                    logger.info('No Task Found', 'TaskController: editTask')
-                    let apiResponse = response.generate(true, 'No Task Found', 404, null)
-                    reject(apiResponse)
+
+                } else if (result.nModified === 0) {
+
+                    // if task not found it means its has been deleted previously so will create a new task with same details
+                    // saving the new task 
+                    let newTask = new TaskModel({
+
+                        taskId: undoObj.taskId,
+                        title: undoObj.title,
+                        type: undoObj.type,
+                        tasks: undoObj.tasks,
+                        createdBy: undoObj.createdBy,
+                        createdByUserId: undoObj.createdByUserId,
+                        modifiedBy: undoObj.modifiedBy,
+                        createdOn: undoObj.createdOn,
+                        modifiedOn: time.now()
+                    })
+
+                    newTask.save((err, newTask) => {
+                        if (err) {
+                            console.log(err)
+                            logger.error(err.message, 'taskController: createTask', 10)
+                            let apiResponse = response.generate(true, 'Failed to create new Task', 500, null)
+                            reject(apiResponse)
+                        } else {
+
+                            let newTaskObj = newTask.toObject();
+                            let apiResponse = response.generate(true, 'Successfully created new Task', 200, newTaskObj)
+                            resolve(newTaskObj)
+                        }
+                    })//end of create task if it is deleted
+
                 } else {
+
                     resolve(result)
+
                 }
             });// end Task model update
 
-            
+
         })
 
     }
 
-    let removeFromDatabase = () =>{
+    let removeFromDatabase = () => {
         return new Promise((resolve, reject) => {
 
             HistoryModel.findOneAndRemove({ usersFriends: req.params.userId })
@@ -294,7 +354,7 @@ let undoTask = (req, res) => {
         .then(editDatabase)
         .then(removeFromDatabase)
         .then((resolve) => {
-            let apiResponse = response.generate(false, 'Undo operation successful', 200, resolve)
+            let apiResponse = response.generate(false, 'Undo operation successful', 200, null)
             res.send(apiResponse)
         })
         .catch((err) => {

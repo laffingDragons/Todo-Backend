@@ -9,7 +9,7 @@ module.exports.setRouter = (app) => {
     let baseUrl = `${appConfig.apiVersion}/task`;
 
 
-    app.get(`${baseUrl}/all/:page`, auth.isAuthorized, taskController.getAllTask);
+    app.get(`${baseUrl}/all`, auth.isAuthorized, taskController.getAllTask);
     
     app.get(`${baseUrl}/:taskId/details`, auth.isAuthorized, taskController.getSingleTask);
     
