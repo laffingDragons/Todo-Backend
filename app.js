@@ -11,6 +11,7 @@ const routeLoggerMiddleware = require('./app/middlewares/routeLogger.js');
 const globalErrorMiddleware = require('./app/middlewares/appErrorHandler');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const cool = require('cool-ascii-faces');
 
 app.use(morgan('dev'));
 
@@ -24,6 +25,8 @@ app.use(globalErrorMiddleware.globalErrorHandler);
 
 app.use(express.static(path.join(__dirname, 'client')));
 
+// heroku stuff
+app.get('/cool', (req, res) => res.send(cool()))
 
 const modelsPath = './app/models';
 const controllersPath = './app/controllers';
