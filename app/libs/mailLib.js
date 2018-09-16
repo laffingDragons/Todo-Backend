@@ -360,7 +360,7 @@ let invitationEmail = (userId, name, email) => {
                         <div class="card card-1">
                             <h3 class="header"> Invitation Mail</h3>
                             <br>
-                            <p class="text-center">${name} wants you to checkout <a href="http://localhost:4200/sign-up?userId=${userId}">ToDo</a> app.</p>
+                            <p class="text-center">${name} wants you to checkout <a href="http://todo-angular.akshaypatil.online/sign-up?userId=${userId}">ToDo</a> app.</p>
                         </div>
                     </div>
                 </div>
