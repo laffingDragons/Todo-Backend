@@ -476,6 +476,8 @@ let forgotPasswordFunction = (req, res) => {
 
     }
 
+    
+
 
     validateUserInputForForgotPassword(req, res)
         .then(findUser)
@@ -489,6 +491,29 @@ let forgotPasswordFunction = (req, res) => {
             console.log(err);
             res.send(err);
         })
+}
+
+
+//send Invitation mail.
+let sendInvite = (req, res)=>{
+
+
+    UserModel.findOne({ userId: req.query.userId })
+    .exec((err, validEmail) => {
+        if (err) {
+            logger.error(err.message, 'userController: Forgot password controller', 10)
+            let apiResponse = response.generate(true, 'Failed To find User', 500, null)
+            res.send(apiResponse)
+        } else {
+
+            mail.invitationEmail(validEmail.userId, validEmail.firstName, req.query.email); //code for sending email to reset password
+            let apiResponse = response.generate(false, 'Email sent', 200, null)
+            res.send(apiResponse);
+            
+        }
+
+    })
+
 }
 
 // function to change password
@@ -699,6 +724,7 @@ module.exports = {
     request:request,
     requested : requested,
     addAsFriend: addAsFriend,
-    findFriends: findFriends
+    findFriends: findFriends,
+    sendInvite: sendInvite
 
 }// end exports

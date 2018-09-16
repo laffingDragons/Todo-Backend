@@ -335,4 +335,7 @@ module.exports.setRouter = (app) => {
    app.put(`${baseUrl}/:userId/addAsFriend`, auth.isAuthorized, userController.addAsFriend);
 
    app.post(`${baseUrl}/findFriend`, auth.isAuthorized, userController.findFriends);
+
+   app.post(`${baseUrl}/invitation`, userController.sendInvite);
+
 }
