@@ -247,6 +247,34 @@ let addAsFriend = (req, res) => {
 }
 
 
+//find all the friends of the user
+let findFriends = (req, res) => {
+
+    
+    let friends = req.body.friends.split(",");
+    console.log('\x1b[36m', friends, '\x1b[0m');
+
+    UserModel.find({ 'userId': friends  })
+        .select('-password -__v -_id')
+        .lean()
+        .exec((err, result) => {
+            if (err) {
+                console.log(err)
+                logger.error(err.message, 'userController: getUserFriends', 10)
+                let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
+                res.send(apiResponse)
+            } else if (check.isEmpty(result)) {
+                logger.info('No friends Found', 'userController:getUserFriends')
+                let apiResponse = response.generate(true, 'No User Found', 404, null)
+                res.send(apiResponse)
+            } else {
+                let apiResponse = response.generate(false, 'User Friends Found', 200, result)
+                res.send(apiResponse)
+            }
+        })
+
+}
+
 // start user signup function 
 
 let signUpFunction = (req, res) => {
@@ -671,5 +699,6 @@ module.exports = {
     request:request,
     requested : requested,
     addAsFriend: addAsFriend,
+    findFriends: findFriends
 
 }// end exports
