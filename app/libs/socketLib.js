@@ -45,7 +45,6 @@ let setServer = (server) => {
                     allOnlineUsers.push(userObject);
                     console.log(allOnlineUsers);
 
-
                     // // setting room name
                     socket.room = 'edChat'
                     // joining chat-group room.

@@ -5,13 +5,13 @@ appConfig.port = 3000;
 appConfig.allowedCorsOrigin = "*";
 appConfig.env = "dev";
 appConfig.db = {
-    uri: 'mongodb://'
+    uri: 
     // uri: 'mongodb://localhost:27017/todo'
   }
 appConfig.apiVersion = '/api/v1';
 
-nodeMailer.email="";
-nodeMailer.password = "";
+nodeMailer.email=
+nodeMailer.password =
 
 module.exports = {
     port: appConfig.port,

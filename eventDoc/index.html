@@ -65,10 +65,16 @@
   #chat-msg {
     height: 350px;
   }
-  #typing-user {
+  #task-changes {
     height: 250px;
   }
-  #chatroom-msg {
+  #auth-error {
+    height: 250px;
+  }
+  #notify {
+    height: 350px;
+  }
+  #task-notify {
     height: 350px;
   }
   #create-room{
@@ -138,17 +144,12 @@
             <a href="#userId">userId</a>
           </li>
           <li>
-            <a href="#room-msg">room-msg</a>
+            <a href="#task-changes">task-changes</a>
           </li>
           <li>
-              <a href="#typing-user">typing-user</a>
+            <a href="#auth-error">auth-error</a>
           </li>
-          <li>
-            <a href="#error-occurred">error-occurred</a>
-          </li>
-          <li>
-            <a href="#disconnect">disconnect</a>
-          </li>
+          
           <br>
           <br>
           <a href="#emit">
@@ -158,20 +159,14 @@
             <a href="#set-user">set-user</a>
           </li>
           <li>
-            <a href="#chat-msg">chat-msg</a>
+            <a href="#notify">notify</a>
           </li>
           <li>
-            <a href="#chatroom-msg">chatroom-msg</a>
+            <a href="#task-notify">task-notify</a>
           </li>
           <li>
-            <a href="#subscribe-room">subscribe-room</a>
+            <a href="#disconnect">disconnect</a>
           </li>
-          <li>
-            <a href="#create-room">create-room</a>
-          </li>
-          <li>
-              <a href="#typing">typing</a>
-            </li>
         </ul>
       </nav>
       <div class="col-sm-9">
@@ -189,19 +184,18 @@
           <h3>online-user-list event</h3>
           <p>This event
             <b>("online-user-list")</b> has to be listened on the user's end to identify all available users that are currently
-            online. All available users can be shown to the user based on which he can start chatting with a user. The output
-            will be an object, object has key as userId and value as full name.</p>
+            online. </p>
         </div>
         <br>
         <div id="userId">
           <h3>userId event</h3>
           <b>This event's name is actually dynamic and refers to the userId of the logged in user.</b>
           <p>This event
-            <b>("userId")</b> has to be listened to identify an individual chat message that has been received. Example output
+            <b>("userId")</b> has to be listened to identify an individual notify message that has been received. Example output
             it as follows:</p>
           <pre>
             {
-                chatId: 'unique chat id',
+                notifyId: 'unique notify id',
                 message: 'you message',
                 createdOn: date, 
                 receiverId: 'userId of receiver',
@@ -212,52 +206,34 @@
         </pre>
           <br>
         </div>
-        <div id="room-msg">
-          <h3>room-msg event</h3>
+        <div id="task-changes">
+          <h3>task-changes event</h3>
           <p>This event
-            <b>("room-msg")</b> has to be listened to identify a chatroom message that has been received. Example output it
-            as follows:</p>
+            <b>("task-changes")</b> has to be listen when there is changes in task like create, edit, delete or undo a task. The following
+            data has to be emitted</p>
           <pre>
             {
-                  chatId: 'unique chat id',
-                  message: 'you message',
-                  createdOn: date, 
-                  chatRoom: 'chatroom Id',
-                  senderId: 'userId of sender',
-                  senderName: 'full name of sender'
-              }
-          </pre>
-        </div>
-        <div id="typing-user">
-            <h3>typing-user event</h3>
-            <p>This event
-              <b>("typing-user")</b> has to be listened to identify the user chating with is typing. Example output it
-              as follows:</p>
-              <pre>
-              {
-                userId: 'userId',
-                name: 'First name of user'
+              senderName: 'John Doe',
+              senderId: 'userId of sender',
+              message: 'your chat message',
+              createdOn: date
               }
             </pre>
-          </div>
-        <div id="error-occurred">
-          <h3>error-occurred event</h3>
+        </div>
+        <br>
+        <div id="auth-error">
+          <h3>auth-error event</h3>
           <p>This event
-            <b>("error-occurred")</b> has to be listened to identify an error which will occur when the data is not sent properly
+            <b>("auth-error")</b> has to be listened to identify an error which will occur when the data is not sent properly
             in the events to be emitted. Example output it as follows:</p>
           <pre>
                     {
-                      status: 123,
+                      status: 500,
                       error: 'error message'
                   }
           </pre>
         </div>
-        <br>
-        <div id="disconnect">
-          <h3>disconnect event (optional)</h3>
-          <p>This event
-            <b>("disconnect")</b> has to be listened, when the user is disconnected to show proper message.</p>
-        </div>
+        
         <br>
         <div id='emit'>
           <h2>Events to emit</h2>
@@ -268,69 +244,48 @@
             <b>("set-user")</b> has to be emitted when a user comes online. User can only be set as online only after verification
             of authentication token. Which you have pass here. The following data has to be emitted authentication token</p>
         </div>
-        <div id="chat-msg">
-          <h3>chat-msg event</h3>
+        <div id="notify">
+          <h3>notify event</h3>
           <p>This event
-            <b>("chat-msg")</b> has to be emitted to identify an individual chat message that has been send. The following data
+            <b>("notify")</b> is emitted when there are user requests for adding or requesting friends request. The following data
             has to be emitted</p>
           <pre>
             {
                 senderName: 'John Doe',
                 senderId: 'userId of sender',
-                receiverName: 'Smith',
+                message: 'your chat message',
                 receiverId: 'userId of receiver',
+                receiverName: full name of receiver,
+                createdOn: date
+                }
+              </pre>
+        </div>
+        <br>
+        <div id="task-notify">
+          <h3>task-notify event</h3>
+          <p>This event
+            <b>("task-notify")</b> is emitted when there are changes in the task like create, edit, delete or undo. The following data
+            has to be emitted</p>
+          <pre>
+            {
+                senderName: 'John Doe',
+                senderId: 'userId of sender',
                 message: 'your chat message',
                 createdOn: date
                 }
               </pre>
         </div>
-        <div id="chatroom-msg">
-          <h3>chatroom-msg event</h3>
+        <br>
+       
+        <div id="disconnect">
+          <h3>disconnect event (optional)</h3>
           <p>This event
-            <b>("chatroom-msg")</b> has to be emitted to identify a chatroom chat message that has been send. The following
-            data has to be emitted</p>
-          <pre>
-                {
-                  senderName: 'John Doe',
-                  senderId: 'userId of sender',
-                  message: 'your chat message',
-                  chatRoom: 'chatroom Id',
-                  createdOn: date
-                }</pre>
+            <b>("disconnect")</b> has to be listened, when the user is disconnected to show proper message.</p>
         </div>
-        <div id="subscribe-room">
-          <h3>subscribe-room event</h3>
-          <p>This event
-            <b>("subscribe-room")</b> has to be emitted to join a chatroom . The following data has to be emitted</p>
-          <pre>
-            {
-             chatRoom: 'chatroom Id',
-            }</pre>
-        </div>
+       
         <br>
         <br>
-        <div id="create-room">
-          <h3>create-room event</h3>
-          <p>This event
-            <b>("create-room")</b> has to be emitted to create a new chatroom . The following data has to be emitted</p>
-          <pre>
-                {
-                  roomId: chatroom Id,
-                  roomName : chatroom name,
-                  members: array of userId that will be in chatroom,
-                  admin: userId of the person who creates group,
-                }</pre>
-        </div>
-        <div id="typing">
-            <h3>typing event</h3>
-            <p>This event
-              <b>("typing")</b> has to be emitted when user start typing . The following data has to be emitted</p>
-            <pre>
-                  {
-                    userId: 'userId',
-                    name: 'First name'
-                  }</pre>
-          </div>
+        
       </div>
     </div>
   </div>
