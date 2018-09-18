@@ -32,16 +32,16 @@ let userSchema = new Schema({
     type: String,
     default: 0
   },
-  createdOn :{
-    type:Date,
+  createdOn: {
+    type: Date,
     default: Date.now
   },
 
-  friends:[{ type: String }],
+  friends: [{ type: String }],
 
-  request:[{ type: String }],
+  request: [{ type: String }],
 
-  requested:[{ type: String }],
+  requested: [{ type: String }],
 
 
 })

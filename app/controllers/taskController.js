@@ -107,14 +107,14 @@ let deleteTask = (req, res) => {
                             if (err) {
                                 console.log(err)
                                 logger.error(err.message, 'taskController:editTask', 10)
-                                let apiResponse = response.generate(true, 'Failed To edit Task details', 500, null)
+                                let apiResponse = response.generate(true, 'Failed To delete Task ', 500, null)
                                 res.send(apiResponse)
                             } else if (check.isEmpty(result)) {
                                 logger.info('No Task Found', 'TaskController: editTask')
                                 let apiResponse = response.generate(true, 'No Task Found', 404, null)
                                 res.send(apiResponse)
                             } else {
-                                let apiResponse = response.generate(false, 'Task deleted successfully', 200, result)
+                                let apiResponse = response.generate(false, 'Task deleted successfully', 200, null)
                                 res.send(apiResponse)
                             }
                         });// end Task model delete
@@ -127,7 +127,7 @@ let deleteTask = (req, res) => {
         })
 
 
-}
+}// end of delete task
 
 
 //edit Task
@@ -186,7 +186,7 @@ let editTask = (req, res) => {
                                 let apiResponse = response.generate(true, 'No Task Found', 404, null)
                                 res.send(apiResponse)
                             } else {
-                                let apiResponse = response.generate(false, 'Task details edited', 200, result)
+                                let apiResponse = response.generate(false, 'Task details edited', 200, null)
                                 res.send(apiResponse)
                             }
                         });// end Task model update
@@ -198,16 +198,10 @@ let editTask = (req, res) => {
             }
         })
 
-
-
-
-
-
-
 }// end edit Task
 
 
-//Createing a task
+//Creating a task
 let createTask = (req, res) => {
 
     let obj = JSON.parse(req.body.tasks)
@@ -234,15 +228,19 @@ let createTask = (req, res) => {
             res.send(apiResponse)
         } else {
             let newTaskObj = newTask.toObject();
-            let apiResponse = response.generate(true, 'Successfully created new Task', 200, newTaskObj)
+            let apiResponse = response.generate(true, 'Successfully created new Task', 200, null)
             res.send(apiResponse)
         }
     })
 
-}
+}//end of creating task
 
+
+//controller for undoing a task
 let undoTask = (req, res) => {
+
     let data
+    // Getting lastest changes done by the users from historyModel
     let fetchHistoryForUser = () => {
 
         return new Promise((resolve, reject) => {
@@ -270,8 +268,10 @@ let undoTask = (req, res) => {
                 })
 
         })
-    }
+    }//end of fetching history
 
+
+    // pushing that task into database
     let editDatabase = () => {
         return new Promise((resolve, reject) => {
             let undoObj = JSON.parse(data.data)
@@ -327,8 +327,10 @@ let undoTask = (req, res) => {
 
         })
 
-    }
+    }//end of push task into database
 
+
+    // removing the task from history
     let removeFromDatabase = () => {
         return new Promise((resolve, reject) => {
 

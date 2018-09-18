@@ -9,9 +9,7 @@ const tokenLib = require("./tokenLib.js");
 const check = require("./checkLib.js");
 const time = require("./timeLib");
 const response = require('./responseLib')
-const ChatModel = mongoose.model('Chat')
 const NotifyModel = mongoose.model('Notify')
-// const redisLib = require('./redisLib')
 const mail = require('./mailLib');
 
 let setServer = (server) => {
@@ -47,36 +45,6 @@ let setServer = (server) => {
                     allOnlineUsers.push(userObject);
                     console.log(allOnlineUsers);
 
-                    // redisLib.setANewOnlineUserInHash("onlineUsers", key, value, (err, result) => {
-                    //     if (err) {
-                    //         console.log(`some error occured`, err);
-                    //     } else {
-                    //         // get online users lists
-                    //         redisLib.getAllUsersInHash('onlineUsers', (err, result) => {
-
-                    //             if (err) {
-                    //                 console.log(err);
-                    //             } else {
-
-                    //                 //  making user to join global room
-                    //                 socket.room = "Global"
-                    //                 socket.join(socket.room);
-
-                    //                 // very very important point to be noted here is that
-                    //                 // broadcast emits to everyone except the client
-                    //                 // socket.to(socket.room).broadcast.emit('online-user-list',result);
-                    //                 myIo.emit('online-user-list', result);
-
-
-                    //             }
-
-                    //         })
-                    //     }
-
-                    // })
-
-                    // let userObj = {userId:currentUser.userId,fullName:fullName}
-                    // allOnlineUsers.push(userObj)
 
                     // // setting room name
                     socket.room = 'edChat'
@@ -107,37 +75,13 @@ let setServer = (server) => {
             socket.leave(socket.room)
             socket.to(socket.room).broadcast.emit('online-user-list', allOnlineUsers);
 
-            //     if (socket.userId) {
-            //         redisLib.deleteUserFromHash('onlineUsers', socket.userId)
-            //         redisLib.getAllUsersInHash('onlineUsers', (err, result) => {
-            //             if (err) {
-            //                 console.log(err);
-            //             } else {
-            //                 socket.leave(socket.room)
-            //                 socket.to(socket.room).broadcast.emit('online-user-list', result)
-            //             }
-            //         })
-            //     }
 
         }) // end of on disconnect
 
 
-        // socket.on('refresh', () => {
-
-        //     redisLib.getAllUsersInHash('onlineUsers', (err, result) => {
-        //         if (err) {
-        //             console.log(err);
-        //         } else {
-        //             //  making user to join global room
-        //             socket.room = "Global"
-        //             socket.join(socket.room);
 
 
-        //         }
-        //     })
-
-        // })
-
+        //on notify event
         socket.on('notify', (data) => {
 
             data['notifyId'] = shortid.generate()
@@ -150,11 +94,13 @@ let setServer = (server) => {
 
             myIo.emit(data.receiverId, data)
 
-        });
+        });//end of notify evnent
 
 
+
+
+        //on task event
         socket.on('task-notify', (data) => {
-            console.log('\x1b[36m', data, '\x1b[0m');
 
             data['notifyId'] = shortid.generate()
             // event to save chat.
@@ -171,49 +117,7 @@ let setServer = (server) => {
         })
 
 
-        // Get chatroom msg
-        // socket.on('chatroom-msg', (data) => {
-
-        //     data['chatId'] = shortid.generate()
-
-        //     // event to save chat.
-        //     setTimeout(function () {
-        //         eventEmitter.emit('save-chat', data);
-
-        //     }, 2000)
-
-        //     socket.to(data.chatRoom).broadcast.emit('room-msg', data);
-
-        // });
-
-        //subscribing a room
-        // socket.on('subscribe-room', (data) => {
-
-        //     socket.room = data
-        //     socket.join(socket.room);
-
-        // })
-
-        //create a new chat Room
-        // socket.on('create-room', (data) => {
-
-        //     data['roomId'] = shortid.generate()
-
-        //     // event to save room.
-
-        //     eventEmitter.emit('save-room', data);
-
-        //     myIo.emit(data.receiverId, data)
-
-        // })
-
-        // socket.on('typing', (userData) => {
-
-        //     socket.to("Global").broadcast.emit('typing-user', userData);
-
-        // });
-
-    });
+    });//end of task event
 
 }
 
@@ -250,34 +154,6 @@ eventEmitter.on('save-notify', (data) => {
     });
 
 }); // end of saving chat.
-
-
-//to save the room
-// eventEmitter.on('save-room', (data) => {
-
-//     let newRoom = new RoomModel({
-
-//         roomId: data.roomId,
-//         roomName: data.roomName,
-//         members: data.members,
-//         active: true,
-//         admin: data.admin,
-//         createdOn: time.now()
-//     })
-
-//     newRoom.save((err, result) => {
-//         if (err) {
-//             console.log(`error occurred: ${err}`);
-//         }
-//         else if (result == undefined || result == null || result == "") {
-//             console.log("Room Is Not Saved.");
-//         }
-//         else {
-//             console.log("Room Saved.");
-//         }
-//     });
-
-// });
 
 
 

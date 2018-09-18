@@ -61,7 +61,7 @@ let getSingleUser = (req, res) => {
 }// end get single user
 
 
-
+//Delete user
 let deleteUser = (req, res) => {
 
     UserModel.findOneAndRemove({ 'userId': req.params.userId }).select(' -__v -_id -password').exec((err, result) => {
@@ -83,6 +83,8 @@ let deleteUser = (req, res) => {
 
 }// end delete user
 
+
+// edit user details
 let editUser = (req, res) => {
 
     let options = req.body;
@@ -102,7 +104,6 @@ let editUser = (req, res) => {
         }
     });// end user model update
 
-
 }// end edit user
 
 
@@ -118,12 +119,14 @@ let request = (req, res) => {
             let apiResponse = response.generate(true, 'Failed To Request', 500, null)
             res.send(apiResponse)
         } else {
-            let apiResponse = response.generate(false, 'Successfully sent request', 200, result)
+            let apiResponse = response.generate(false, 'Successfully sent request', 200, null)
             res.send(apiResponse)
         }
     });// end user model update
 
-}
+}//end of request
+
+
 
 // adding to requested to own list
 let requested = (req, res) => {
@@ -136,7 +139,7 @@ let requested = (req, res) => {
             let apiResponse = response.generate(true, 'Failed To Request', 500, null)
             res.send(apiResponse)
         } else {
-            let apiResponse = response.generate(false, 'Successfully sent request', 200, result)
+            let apiResponse = response.generate(false, 'Successfully sent request', 200, null)
             res.send(apiResponse)
         }
     });// end user model update
@@ -144,7 +147,7 @@ let requested = (req, res) => {
 }//end of requested
 
 
-
+// adding user to friends list
 let addAsFriend = (req, res) => {
 
     // adding user's request to friends array 
@@ -165,7 +168,8 @@ let addAsFriend = (req, res) => {
             });// end user model update
 
         })
-    }
+    }//end of add user to friends list
+
 
     // adding user to his friend's  "friends" array
     let addToFriendsArray = () => {
@@ -179,7 +183,7 @@ let addAsFriend = (req, res) => {
                     let apiResponse = response.generate(true, 'Failed To Add To Friends Array', 500, null)
                     reject(apiResponse)
                 } else {
-                    let apiResponse = response.generate(false, 'Successfully Added To Friends Array', 200, result)
+                    let apiResponse = response.generate(false, 'Successfully Added To Friends Array', 200, null)
                     resolve(apiResponse)
                 }
             });// end user model update
@@ -244,12 +248,11 @@ let addAsFriend = (req, res) => {
         })
 
 
-}
+}//end adding as friend controller
 
 
 //find all the friends of the user
 let findFriends = (req, res) => {
-
 
     let friends = req.body.friends.split(",");
     console.log('\x1b[36m', friends, '\x1b[0m');
@@ -273,10 +276,10 @@ let findFriends = (req, res) => {
             }
         })
 
-}
+}//end of find all frirnds detail for a user
+
 
 // start user signup function 
-
 let signUpFunction = (req, res) => {
 
     let validateUserInput = () => {
@@ -298,6 +301,8 @@ let signUpFunction = (req, res) => {
             }
         })
     }// end validate user input
+
+
     let createUser = () => {
         return new Promise((resolve, reject) => {
             UserModel.findOne({ email: req.body.email })
@@ -337,6 +342,7 @@ let signUpFunction = (req, res) => {
         })
     }// end create user function
 
+
     let generateToken = (userDetails) => {
         console.log("generate token");
         return new Promise((resolve, reject) => {
@@ -353,6 +359,8 @@ let signUpFunction = (req, res) => {
             })
         })
     }
+
+
     let saveToken = (tokenDetails) => {
         console.log("save token");
         return new Promise((resolve, reject) => {
@@ -434,6 +442,7 @@ let signUpFunction = (req, res) => {
 
 }// end user signup function 
 
+
 //sending the forgot password mail
 let forgotPasswordFunction = (req, res) => {
 
@@ -476,9 +485,6 @@ let forgotPasswordFunction = (req, res) => {
 
     }
 
-
-
-
     validateUserInputForForgotPassword(req, res)
         .then(findUser)
         .then((resolve) => {
@@ -497,11 +503,10 @@ let forgotPasswordFunction = (req, res) => {
 //send Invitation mail.
 let sendInvite = (req, res) => {
 
-
     UserModel.findOne({ userId: req.query.userId })
         .exec((err, validEmail) => {
             if (err) {
-                logger.error(err.message, 'userController: Forgot password controller', 10)
+                logger.error(err.message, 'userController: Invition mail controller', 10)
                 let apiResponse = response.generate(true, 'Failed To find User', 500, null)
                 res.send(apiResponse)
             } else {
@@ -514,7 +519,9 @@ let sendInvite = (req, res) => {
 
         })
 
-}
+}//end of invitation mail.
+
+
 
 //adding invited friend to friends array on both the users
 let addInvitedFriend = (req, res) => {
@@ -531,32 +538,26 @@ let addInvitedFriend = (req, res) => {
 
                 // adding friend to inivited user
 
-                UserModel.update({ userId: req.query.inviteId }, { $push: { friends: req.query.userId } } )
+                UserModel.update({ userId: req.query.inviteId }, { $push: { friends: req.query.userId } })
                     .exec((err, result) => {
                         if (err) {
                             logger.error(err.message, 'userController: Adding invited friend ', 10)
                             let apiResponse = response.generate(true, 'Failed To find User', 500, null)
                             res.send(apiResponse)
                         } else {
-                           
 
                             let apiResponse = response.generate(false, `Friend added to friends list`, 200, null)
                             res.send(apiResponse)
 
                         }
-
                     })//end of adding friend
-
             }
-
         })//end of adding friend for invited user
+}//end of adding friend unconditonally
 
-
-}
 
 //Unfriend  friend from friends array on both the users
 let unFriend = (req, res) => {
-    console.log('\x1b[36m',  req.query.friendId, req.query.userId, '\x1b[0m');
     let options = { $pull: { friends: req.query.friendId } }
 
     UserModel.update({ userId: req.query.userId }, options)
@@ -569,28 +570,23 @@ let unFriend = (req, res) => {
 
                 // Removing friend from user doc
 
-                UserModel.update({ userId: req.query.friendId }, { $pull: { friends: req.query.userId } } )
+                UserModel.update({ userId: req.query.friendId }, { $pull: { friends: req.query.userId } })
                     .exec((err, result) => {
                         if (err) {
                             logger.error(err.message, 'userController: Removing friend ', 10)
                             let apiResponse = response.generate(true, 'Failed To find User', 500, null)
                             res.send(apiResponse)
                         } else {
-                           
 
                             let apiResponse = response.generate(false, `Friend removed from friends list`, 200, null)
                             res.send(apiResponse)
 
                         }
-
                     })//end of Removing friend
-
             }
-
         })//end of Removing friend for user
+}//end of unfriend controller
 
-
-}
 
 // function to change password
 let changePasswordFunction = (req, res) => {
@@ -757,11 +753,7 @@ let loginFunction = (req, res) => {
             console.log("errorhandler");
             res.send(err)
         })
-}
-
-
-
-// end of the login function 
+}// end of the login function 
 
 
 /**

@@ -1,273 +1,64 @@
 define({ "api": [
   {
-    "group": "chat",
-    "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/chat/count/unseen",
-    "title": "to get count of unseen messages.",
+    "url": "/api/v1/task/:userId/notification",
+    "title": "Get notifications",
+    "version": "0.0.1",
+    "group": "notification",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
+            "optional": false,
+            "field": "authToken",
+            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
             "optional": false,
             "field": "userId",
-            "description": "<p>userId of logged in user. (query params) (required)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "senderId",
-            "description": "<p>userId sending user. (query params) (required)</p>"
+            "description": "<p>The userId of user. (params) (required)</p>"
           }
         ]
       }
     },
     "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {\n  \"error\": false,\n  \"message\": \"unseen chat count found.\",\n  \"status\": 200,\n  \"data\": 5\n\n}",
-          "type": "object"
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"Notify Details Found\",\n\t\t\"status\": 200,\n\t\t\"data\":[\n               {\n                   \"notifyId\": \"String\",\n                   \"createdOn\": \"Date\",\n                   \"seen\": \"Boolean\",\n                   \"message\": \"String\",\n                   \"receiverId\": Object.type(Array),\n                   \"receiverName\": \"String\",\n                   \"senderId\": \"String\",\n                   \"senderName\": \"String\"\n               },\n              .......\n              ]\n  }",
+          "type": "json"
         }
       ]
     },
-    "filename": "app/routes/chat.js",
-    "groupTitle": "chat",
-    "name": "GetApiV1ChatCountUnseen"
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Find Notify Details\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/task.js",
+    "groupTitle": "notification",
+    "name": "GetApiV1TaskUseridNotification"
   },
   {
-    "group": "chat",
-    "version": "1.0.0",
     "type": "get",
-    "url": "/api/v1/chat/find/unseen",
-    "title": "to get paginated unseen chats of user.",
+    "url": "/api/v1/task/all",
+    "title": "View all Tasks",
+    "version": "0.0.1",
+    "group": "task",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "userId",
-            "description": "<p>userId of logged in user. (query params) (required)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "senderId",
-            "description": "<p>userId sending user. (query params) (required)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "number",
-            "optional": false,
-            "field": "skip",
-            "description": "<p>skip value for pagination. (query params) (optional)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " {\n  \"error\": false,\n  \"message\": \"chat found and listed.\",\n  \"status\": 200,\n  \"data\": [\n    {\n      \"chatId\": \"IELO6EVjx\",\n      \"modifiedOn\": \"2018-03-05T15:36:31.026Z\",\n      \"createdOn\": \"2018-03-05T15:36:31.025Z\",\n      \"message\": \"hello .. .. sourav\",\n      \"receiverId\": \"-E9zxTYA8\",\n      \"receiverName\": \"Rishabh Sengar\",\n      \"seen\": false,\n      \"senderId\": \"-cA7DiYj5\",\n      \"senderName\": \"sourav das\"\n    },\n    {\n      \"chatId\": \"ZcaxtEXPT\",\n      \"modifiedOn\": \"2018-03-05T15:36:39.548Z\",\n      \"createdOn\": \"2018-03-05T15:36:39.547Z\",\n      \"message\": \"hello rishabh .. .. .. \",\n      \"receiverId\": \"-cA7DiYj5\",\n      \"receiverName\": \"sourav das\",\n      \"seen\": false,\n      \"senderId\": \"-E9zxTYA8\",\n      \"senderName\": \"Rishabh Sengar\"\n    },\n    .........................\n  ]\n\n}",
-          "type": "object"
-        }
-      ]
-    },
-    "filename": "app/routes/chat.js",
-    "groupTitle": "chat",
-    "name": "GetApiV1ChatFindUnseen"
-  },
-  {
-    "group": "chat",
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/chat/get/for/group",
-    "title": "to get paginated chats of group.",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "roomId",
-            "description": "<p>Room Id of the room. (query params) (required)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "number",
-            "optional": false,
-            "field": "skip",
-            "description": "<p>skip value for pagination. (query params) (optional)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " {\n  \"error\": false,\n  \"message\": \"All Group Chats Listed\",\n  \"status\": 200,\n  \"data\": [\n    {\n      \"chatId\": \"String\",\n      \"modifiedOn\": \"Date\",\n      \"createdOn\": \"Date\",\n      \"message\": \"String\",\n      \"senderId\": \"String\",\n      \"senderName\": \"String\",\n      \"chatRoom\": \"String\"\n    },\n    {\n      \"chatId\": \"String\",\n      \"modifiedOn\": \"Date\",\n      \"createdOn\": \"Date\",\n      \"message\": \"String\",\n      \"senderId\": \"String\",\n      \"senderName\": \"String\",\n      \"chatRoom\": \"String\"\n    },\n    .........................\n  ]\n\n}",
-          "type": "object"
-        }
-      ]
-    },
-    "filename": "app/routes/chat.js",
-    "groupTitle": "chat",
-    "name": "GetApiV1ChatGetForGroup"
-  },
-  {
-    "group": "chat",
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/chat/get/for/user",
-    "title": "to get paginated chats of user.",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "senderId",
-            "description": "<p>userId of logged in user. (query params) (required)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "receiverId",
-            "description": "<p>userId receiving user. (query params) (required)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "number",
-            "optional": false,
-            "field": "skip",
-            "description": "<p>skip value for pagination. (query params) (optional)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " {\n  \"error\": false,\n  \"message\": \"All Chats Listed\",\n  \"status\": 200,\n  \"data\": [\n    {\n      \"chatId\": \"IELO6EVjx\",\n      \"modifiedOn\": \"2018-03-05T15:36:31.026Z\",\n      \"createdOn\": \"2018-03-05T15:36:31.025Z\",\n      \"message\": \"hello .. .. sourav\",\n      \"receiverId\": \"-E9zxTYA8\",\n      \"receiverName\": \"Rishabh Sengar\",\n      \"senderId\": \"-cA7DiYj5\",\n      \"senderName\": \"sourav das\"\n    },\n    {\n      \"chatId\": \"ZcaxtEXPT\",\n      \"modifiedOn\": \"2018-03-05T15:36:39.548Z\",\n      \"createdOn\": \"2018-03-05T15:36:39.547Z\",\n      \"message\": \"hello rishabh .. .. .. \",\n      \"receiverId\": \"-cA7DiYj5\",\n      \"receiverName\": \"sourav das\",\n      \"senderId\": \"-E9zxTYA8\",\n      \"senderName\": \"Rishabh Sengar\"\n    },\n    .........................\n  ]\n\n}",
-          "type": "object"
-        }
-      ]
-    },
-    "filename": "app/routes/chat.js",
-    "groupTitle": "chat",
-    "name": "GetApiV1ChatGetForUser"
-  },
-  {
-    "group": "chat",
-    "version": "1.0.0",
-    "type": "get",
-    "url": "/api/v1/chat/unseen/user/list",
-    "title": "to get user list of unseen chats.",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "userId",
-            "description": "<p>userId of logged in user. (query params) (required)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " {\n  \"error\": false,\n  \"message\": \"All Chats Listed\",\n  \"status\": 200,\n  \"data\": [\n    {\n      \"chatId\": \"IELO6EVjx\",\n      \"modifiedOn\": \"2018-03-05T15:36:31.026Z\",\n      \"createdOn\": \"2018-03-05T15:36:31.025Z\",\n      \"message\": \"hello .. .. sourav\",\n      \"receiverId\": \"-E9zxTYA8\",\n      \"receiverName\": \"Rishabh Sengar\",\n      \"senderId\": \"-cA7DiYj5\",\n      \"senderName\": \"sourav das\"\n    },\n    {\n      \"chatId\": \"ZcaxtEXPT\",\n      \"modifiedOn\": \"2018-03-05T15:36:39.548Z\",\n      \"createdOn\": \"2018-03-05T15:36:39.547Z\",\n      \"message\": \"hello rishabh .. .. .. \",\n      \"receiverId\": \"-cA7DiYj5\",\n      \"receiverName\": \"sourav das\",\n      \"senderId\": \"-E9zxTYA8\",\n      \"senderName\": \"Rishabh Sengar\"\n    },\n    .........................\n  ]\n\n}",
-          "type": "object"
-        }
-      ]
-    },
-    "filename": "app/routes/chat.js",
-    "groupTitle": "chat",
-    "name": "GetApiV1ChatUnseenUserList"
-  },
-  {
-    "type": "get",
-    "url": "/api/v1/room/all",
-    "title": "Get all Rooms",
-    "group": "room",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
             "field": "authToken",
             "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
@@ -276,22 +67,11 @@ define({ "api": [
       }
     },
     "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"All Room Details Found\",\n    \"status\": 200,\n    \"data\": [\n                {\n                    \"createdOn\": \"Date\",\n                   \"admin\": \"String\",\n                    \"active\": \"Boolean\",\n                    \"requested\": object(type = array),\n                    \"members\":object(type = array),\n                    \"roomName\": \"String\",\n                    \"roomId\": \"String\",\n                },\n         ..............\n         ]\n}",
-          "type": "object"
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"All Task Details Found\",\n\t\t\"status\": 200,\n\t\t\"data\": [\n                 {\n                       \"createdOn\": \"Date\",\n                       \"modifiedOn\": \"Date\",\n                       \"mobileNumber\": \"Number\",\n                       \"createdByUserId\": \"String\",\n                       \"modifiedBy\": \"String\",\n                       \"taskId\": \"String\",\n                       \"tasks\":[\n                                  {\n                                      \"task\":\"String\",\n                                      \"status\":\"String\",\n                                      \"subtask\": Object.type(Array)\n                                      }\n                                  ]\n                 },\n                  ......            \n               ]\n  }",
+          "type": "json"
         }
       ]
     },
@@ -299,58 +79,47 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Find Room Details\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Find Task Details\",\n  \"status\": 500,\n  \"data\": null\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "app/routes/room.js",
-    "groupTitle": "room",
-    "name": "GetApiV1RoomAll"
+    "filename": "app/routes/task.js",
+    "groupTitle": "task",
+    "name": "GetApiV1TaskAll"
   },
   {
     "type": "get",
-    "url": "/api/v1/room/:roomId/details",
-    "title": "Get Room by Id",
-    "group": "room",
-    "version": "1.0.0",
+    "url": "/api/v1/task/:taskId/details",
+    "title": "Get single task details",
+    "version": "0.0.1",
+    "group": "task",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
             "field": "authToken",
             "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
           },
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
-            "field": "roomId",
-            "description": "<p>Room Id of the room. (params)</p>"
+            "field": "taskId",
+            "description": "<p>The taskId of task for details. (params) (required)</p>"
           }
         ]
       }
     },
     "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"Room Details Found\",\n    \"status\": 200,\n    \"data\": {\n                   \"createdOn\": \"Date\",\n                   \"admin\": \"String\",\n                   \"active\": \"Boolean\",\n                   \"requested\": object(type = array),\n                   \"members\":object(type = array),\n                   \"roomName\": \"String\",\n                   \"roomId\": \"String\",\n                }\n}",
-          "type": "object"
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"Task Details Found\",\n\t\t\"status\": 200,\n\t\t\"data\": [\n                 {\n                       \"createdOn\": \"Date\",\n                       \"modifiedOn\": \"Date\",\n                       \"mobileNumber\": \"Number\",\n                       \"createdByUserId\": \"String\",\n                       \"modifiedBy\": \"String\",\n                       \"taskId\": \"String\",\n                       \"tasks\":[\n                                  {\n                                      \"task\":\"String\",\n                                      \"status\":\"String\",\n                                      \"subtask\": Object.type(Array)\n                                      }\n                                  ]\n                 }\n               ]\n  }",
+          "type": "json"
         }
       ]
     },
@@ -358,79 +127,130 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Find Room Details\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Find Task Details\",\n  \"status\": 500,\n  \"data\": null\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "app/routes/room.js",
-    "groupTitle": "room",
-    "name": "GetApiV1RoomRoomidDetails"
+    "filename": "app/routes/task.js",
+    "groupTitle": "task",
+    "name": "GetApiV1TaskTaskidDetails"
+  },
+  {
+    "type": "get",
+    "url": "/api/v1/task/:userId/undo",
+    "title": "Undo task",
+    "version": "0.0.1",
+    "group": "task",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "authToken",
+            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>The userId of user. (params) (required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"Undo operation successful\",\n\t\t\"status\": 200,\n\t\t\"data\":null\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To edit Task details\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/task.js",
+    "groupTitle": "task",
+    "name": "GetApiV1TaskUseridUndo"
   },
   {
     "type": "post",
-    "url": "/api/v1/room/invite",
-    "title": "Invitation mail",
-    "group": "room",
-    "version": "1.0.0",
+    "url": "/api/v1/task/create",
+    "title": "Create task",
+    "version": "0.0.1",
+    "group": "task",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
             "field": "authToken",
             "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
           },
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
-            "field": "roomName",
-            "description": "<p>Room name of the room. (body params)</p>"
+            "field": "title",
+            "description": "<p>The title of task. (body params) (required)</p>"
           },
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
-            "field": "email",
-            "description": "<p>Email id of the person to whom the mail is to sent. (body params)</p>"
+            "field": "type",
+            "description": "<p>The type of task. (body params) (required)</p>"
           },
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "Object",
             "optional": false,
-            "field": "link",
-            "description": "<p>Link of the room. (body params)</p>"
+            "field": "tasks",
+            "description": "<p>The subtask object of task. (body params) (required)</p>"
           },
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
-            "field": "senderName",
-            "description": "<p>Name of the member who will be sending the invitation. (body params)</p>"
+            "field": "createdBy",
+            "description": "<p>The name of user. (body params) (required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "createdByUserId",
+            "description": "<p>The userId of user. (body params) (required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "modifiedBy",
+            "description": "<p>The userId of user. (body params) (required)</p>"
           }
         ]
       }
     },
     "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"Email sent successfully\",\n    \"status\": 200,\n    \"data\": null\n}",
-          "type": "object"
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"Successfully created new Task\",\n\t\t\"status\": 200,\n\t\t\"data\":null\n  }",
+          "type": "json"
         }
       ]
     },
@@ -438,65 +258,123 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "\n{\n  \"error\": true,\n  \"message\": \"Email Does not met the requirement\",\n  \"status\": 400,\n  \"data\": null\n}",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed to create new Task\",\n  \"status\": 500,\n  \"data\": null\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "app/routes/room.js",
-    "groupTitle": "room",
-    "name": "PostApiV1RoomInvite"
+    "filename": "app/routes/task.js",
+    "groupTitle": "task",
+    "name": "PostApiV1TaskCreate"
+  },
+  {
+    "type": "post",
+    "url": "/api/v1/task/:taskId/delete",
+    "title": "Delete task",
+    "version": "0.0.1",
+    "group": "task",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "authToken",
+            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "taskId",
+            "description": "<p>The taskId of task for details. (params) (required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"Task deleted successfully\",\n\t\t\"status\": 200,\n\t\t\"data\":null\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To delete Task\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/task.js",
+    "groupTitle": "task",
+    "name": "PostApiV1TaskTaskidDelete"
   },
   {
     "type": "put",
-    "url": "/api/v1/room/:roomId/addUserToRoom",
-    "title": "Add Users to Room",
-    "group": "room",
-    "version": "1.0.0",
+    "url": "/api/v1/task/:taskId/edit",
+    "title": "Edit single task details",
+    "version": "0.0.1",
+    "group": "task",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
             "field": "authToken",
             "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
           },
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
-            "field": "roomId",
-            "description": "<p>Room Id of the room. (body params)</p>"
+            "field": "taskId",
+            "description": "<p>The taskId of task for details. (params) (required)</p>"
           },
           {
             "group": "Parameter",
-            "type": "string",
+            "type": "String",
             "optional": false,
-            "field": "members",
-            "description": "<p>Array of userId which is to be added to room. (body params)</p>"
+            "field": "title",
+            "description": "<p>The title of task. (body params) (required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>The type of task. (body params) (required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "tasks",
+            "description": "<p>The subtask object of task. (body params) (required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "modifiedBy",
+            "description": "<p>The userId of user. (body params) (required)</p>"
           }
         ]
       }
     },
     "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"Users Added to room Successfully\",\n    \"status\": 200,\n    \"data\": {\n                   \"createdOn\": \"Date\",\n                   \"admin\": \"String\",\n                   \"active\": \"Boolean\",\n                   \"requested\": object(type = array),\n                   \"members\":object(type = array),\n                   \"roomName\": \"String\",\n                   \"roomId\": \"String\",\n                }\n}",
-          "type": "object"
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"Task details edited\",\n\t\t\"status\": 200,\n\t\t\"data\":null\n  }",
+          "type": "json"
         }
       ]
     },
@@ -504,278 +382,14 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To add members Room \",\n  \"status\": 500,\n  \"data\": null\n}",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To edit Task details\",\n  \"status\": 500,\n  \"data\": null\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "app/routes/room.js",
-    "groupTitle": "room",
-    "name": "PutApiV1RoomRoomidAddusertoroom"
-  },
-  {
-    "type": "put",
-    "url": "/api/v1/room/:roomId/editRoomName",
-    "title": "Edit room name",
-    "group": "room",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "authToken",
-            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "roomId",
-            "description": "<p>Room Id of the room. (body params)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "roomName",
-            "description": "<p>Room name of the room. (body params)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"Room details edited\",\n    \"status\": 200,\n    \"data\": {\n                   \"createdOn\": \"Date\",\n                   \"admin\": \"String\",\n                   \"active\": \"Boolean\",\n                   \"requested\": object(type = array),\n                   \"members\":object(type = array),\n                   \"roomName\": \"String\",\n                   \"roomId\": \"String\",\n                }\n}",
-          "type": "object"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To edit Room name\",\n  \"status\": 500,\n  \"data\": null\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/room.js",
-    "groupTitle": "room",
-    "name": "PutApiV1RoomRoomidEditroomname"
-  },
-  {
-    "type": "put",
-    "url": "/api/v1/room/:roomId/removeUser",
-    "title": "Remove User from Room",
-    "group": "room",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "authToken",
-            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "roomId",
-            "description": "<p>Room Id of the room. (body params)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "members",
-            "description": "<p>UserId which is to be reomoved from room. (body params)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"Failed To remove user from room\",\n    \"status\": 200,\n    \"data\": {\n                   \"createdOn\": \"Date\",\n                   \"admin\": \"String\",\n                   \"active\": \"Boolean\",\n                   \"requested\": object(type = array),\n                   \"members\":object(type = array),\n                   \"roomName\": \"String\",\n                   \"roomId\": \"String\",\n                }\n}",
-          "type": "object"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "\n{\n  \"error\": true,\n  \"message\": \"Left the room successfully\",\n  \"status\": 500,\n  \"data\": null\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/room.js",
-    "groupTitle": "room",
-    "name": "PutApiV1RoomRoomidRemoveuser"
-  },
-  {
-    "type": "put",
-    "url": "/api/v1/room/:roomId/removeUserFromRequested",
-    "title": "Remove User from Requested",
-    "group": "room",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "authToken",
-            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "roomId",
-            "description": "<p>Room Id of the room. (body params)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "requested",
-            "description": "<p>UserId which is to be removed From requested array. (body params)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"User request has Declined\",\n    \"status\": 200,\n    \"data\": {\n                   \"createdOn\": \"Date\",\n                   \"admin\": \"String\",\n                   \"active\": \"Boolean\",\n                   \"requested\": object(type = array),\n                   \"members\":object(type = array),\n                   \"roomName\": \"String\",\n                   \"roomId\": \"String\",\n                }\n}",
-          "type": "object"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To remove user from Requested\",\n  \"status\": 500,\n  \"data\": null\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/room.js",
-    "groupTitle": "room",
-    "name": "PutApiV1RoomRoomidRemoveuserfromrequested"
-  },
-  {
-    "type": "put",
-    "url": "/api/v1/room/:roomId/request",
-    "title": "Request for Room",
-    "group": "room",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "authToken",
-            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "requested",
-            "description": "<p>User Id in requested array. (body params)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "roomId",
-            "description": "<p>Room Id of the room. (body params)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "object",
-            "optional": false,
-            "field": "myResponse",
-            "description": "<p>shows error status, message, http status code, result.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"Successfully sent request to join chatroom\",\n    \"status\": 200,\n    \"data\": {\n                   \"createdOn\": \"Date\",\n                   \"admin\": \"String\",\n                   \"active\": \"Boolean\",\n                   \"requested\": object(type = array),\n                   \"members\":object(type = array),\n                   \"roomName\": \"String\",\n                   \"roomId\": \"String\",\n                }\n}",
-          "type": "object"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Request\",\n  \"status\": 500,\n  \"data\": null\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/room.js",
-    "groupTitle": "room",
-    "name": "PutApiV1RoomRoomidRequest"
+    "filename": "app/routes/task.js",
+    "groupTitle": "task",
+    "name": "PutApiV1TaskTaskidEdit"
   },
   {
     "type": "get",
@@ -818,7 +432,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"User Details Found\",\n    \"status\": 200,\n    \"data\": {\n             \"createdOn\": \"Date\",\n             \"mobileNumber\": \"Number\",\n             \"email\": \"String\",\n             \"lastName\": \"String\",\n             \"firstName\": \"String\",\n             \"userId\": \"String\"\n    }\n}",
+          "content": " {\n    \"error\": false,\n    \"message\": \"User Details Found\",\n    \"status\": 200,\n    \"data\": {\n             \"requested\": Object.type(Array),  \n             \"request\": Object.type(Array),  \n             \"friends\": Object.type(Array),\n             \"createdOn\": \"Date\",\n             \"mobileNumber\": \"Number\",\n             \"email\": \"String\",\n             \"lastName\": \"String\",\n             \"firstName\": \"String\",\n             \"userId\": \"String\"\n    }\n}",
           "type": "object"
         }
       ]
@@ -835,6 +449,154 @@ define({ "api": [
     "filename": "app/routes/user.js",
     "groupTitle": "users",
     "name": "GetApiV1UsersUseridDetails"
+  },
+  {
+    "type": "get",
+    "url": "/api/v1/users/view/all",
+    "title": "View all users",
+    "version": "0.0.1",
+    "group": "users",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "authToken",
+            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"All User Details Found\",\n\t\t\"status\": 200,\n\t\t\"data\": [\n                 {\n                       \"requested\": Object.type(Array),  \n                       \"request\": Object.type(Array),  \n                       \"friends\": Object.type(Array),\n                       \"createdOn\": \"Date\",\n                       \"mobileNumber\": \"Number\",\n                       \"email\": \"String\",\n                       \"lastName\": \"String\",\n                       \"firstName\": \"String\",\n                       \"userId\": \"String\",\n                 },\n                .......\n               ]\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Find User Details\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user.js",
+    "groupTitle": "users",
+    "name": "GetApiV1UsersViewAll"
+  },
+  {
+    "type": "post",
+    "url": "/api/v1/users/addInvitedFriend",
+    "title": "Add invited Friend",
+    "group": "users",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "inviteId",
+            "description": "<p>UserId of the user's friend who has invited him to the platform. (query params) (required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>UserId of the user's . (query params) (required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "myResponse",
+            "description": "<p>shows error status, message, http status code, result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n   \"error\": false,\n   \"message\": \"Friend added to friends list\",\n   \"status\": 200,\n   \"data\": null\n}",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To find User\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user.js",
+    "groupTitle": "users",
+    "name": "PostApiV1UsersAddinvitedfriend"
+  },
+  {
+    "type": "post",
+    "url": "/api/v1/users/findFriend",
+    "title": "Find friends",
+    "version": "0.0.1",
+    "group": "users",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "authToken",
+            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "friends",
+            "description": "<p>Friends array of the user. (Send friends array of the user as body params)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"User Friends Found\",\n\t\t\"status\": 200,\n\t\t\"data\": [\n                 {\n                       \"requested\": Object.type(Array),  \n                       \"request\": Object.type(Array),  \n                       \"friends\": Object.type(Array),\n                       \"createdOn\": \"Date\",\n                       \"mobileNumber\": \"Number\",\n                       \"email\": \"String\",\n                       \"lastName\": \"String\",\n                       \"firstName\": \"String\",\n                       \"userId\": \"String\",\n                 }\n               ]\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Find User Details\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user.js",
+    "groupTitle": "users",
+    "name": "PostApiV1UsersFindfriend"
   },
   {
     "type": "post",
@@ -890,6 +652,58 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/api/v1/users/invitation",
+    "title": "Invitation",
+    "group": "users",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>UserId of the user. (query params) (required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "myResponse",
+            "description": "<p>shows error status, message, http status code, result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n   \"error\": false,\n   \"message\": \"Email sent\",\n   \"status\": 200,\n   \"data\": null\n}",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To find User\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user.js",
+    "groupTitle": "users",
+    "name": "PostApiV1UsersInvitation"
+  },
+  {
+    "type": "post",
     "url": "/api/v1/users/login",
     "title": "Login",
     "version": "0.0.1",
@@ -918,7 +732,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"Login Successful\",\n\t\t\"status\": 200,\n\t\t\"data\":  {\n               \"authToken\": \"String\",\n               \"userDetails\": {\n                   \"mobileNumber\": \"Number\",\n                   \"email\": \"String\",\n                   \"lastName\": \"String\",\n                   \"firstName\": \"String\",\n                   \"userId\": \"String\",\n               }\n  }",
+          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"Login Successful\",\n\t\t\"status\": 200,\n\t\t\"data\":  {\n               \"authToken\": \"String\",\n               \"userDetails\": {\n                   \"requested\": Object.type(Array),  \n                   \"request\": Object.type(Array),  \n                   \"friends\": Object.type(Array),  \n                   \"mobileNumber\": \"Number\",\n                   \"email\": \"String\",\n                   \"lastName\": \"String\",\n                   \"firstName\": \"String\",\n                   \"userId\": \"String\",\n               }\n  }",
           "type": "json"
         }
       ]
@@ -1057,7 +871,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"User created\",\n    \"status\": 200,\n    \"data\": {\n       \"authToken\": \"String\",\n        \"userDetails\": {\n        \"createdOn\":\"Date\",    \n        \"mobileNumber\": \"String\",\n        \"email\": \"String\",\n        \"lastName\": \"String\",\n        \"firstName\": \"String\",\n        \"userId\": \"String\"\n   }\n\n}",
+          "content": " {\n    \"error\": false,\n    \"message\": \"User created\",\n    \"status\": 200,\n    \"data\": {\n       \"authToken\": \"String\",\n        \"userDetails\": {\n        \"requested\": Object.type(Array),  \n        \"request\": Object.type(Array),  \n        \"friends\": Object.type(Array),\n        \"createdOn\":\"Date\",    \n        \"mobileNumber\": \"String\",\n        \"email\": \"String\",\n        \"lastName\": \"String\",\n        \"firstName\": \"String\",\n        \"userId\": \"String\"\n   }\n\n}",
           "type": "object"
         }
       ]
@@ -1074,6 +888,58 @@ define({ "api": [
     "filename": "app/routes/user.js",
     "groupTitle": "users",
     "name": "PostApiV1UsersSignup"
+  },
+  {
+    "type": "post",
+    "url": "/api/v1/users/unFriend",
+    "title": "UnFriend",
+    "group": "users",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "friendId",
+            "description": "<p>UserId of the user's friend to unfriend. (query params) (required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "myResponse",
+            "description": "<p>shows error status, message, http status code, result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n   \"error\": false,\n   \"message\": \"Friend removed from friends list\",\n   \"status\": 200,\n   \"data\": null\n}",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To find User\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user.js",
+    "groupTitle": "users",
+    "name": "PostApiV1UsersUnfriend"
   },
   {
     "type": "post",
@@ -1116,7 +982,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n   \"error\": false,\n   \"message\": \"Deleted the user successfully\",\n   \"status\": 200,\n   \"data\":{\n            \"createdOn\":\"Date\",    \n            \"mobileNumber\": \"String\",\n            \"email\": \"String\",\n            \"lastName\": \"String\",\n            \"firstName\": \"String\",\n            \"userId\": \"String\"\n          }\n }",
+          "content": "{\n   \"error\": false,\n   \"message\": \"Deleted the user successfully\",\n   \"status\": 200,\n   \"data\":{\n            \"requested\": Object.type(Array),  \n            \"request\": Object.type(Array),  \n            \"friends\": Object.type(Array),\n            \"createdOn\":\"Date\",    \n            \"mobileNumber\": \"String\",\n            \"email\": \"String\",\n            \"lastName\": \"String\",\n            \"firstName\": \"String\",\n            \"userId\": \"String\"\n          }\n }",
           "type": "object"
         }
       ]
@@ -1133,47 +999,6 @@ define({ "api": [
     "filename": "app/routes/user.js",
     "groupTitle": "users",
     "name": "PostApiV1UsersUseridDelete"
-  },
-  {
-    "type": "post",
-    "url": "/api/v1/users/view/all",
-    "title": "View all users",
-    "version": "0.0.1",
-    "group": "users",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "authToken",
-            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "   \n  {\n\t\t\"error\": false,\n\t\t\"message\": \"All User Details Found\",\n\t\t\"status\": 200,\n\t\t\"data\": [\n                 {\n                       \"createdOn\": \"Date\",\n                       \"mobileNumber\": \"Number\",\n                       \"email\": \"String\",\n                       \"lastName\": \"String\",\n                       \"firstName\": \"String\",\n                       \"userId\": \"String\",\n                 }\n               ]\n  }",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Find User Details\",\n  \"status\": 500,\n  \"data\": null\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/routes/user.js",
-    "groupTitle": "users",
-    "name": "PostApiV1UsersViewAll"
   },
   {
     "type": "put",
@@ -1216,7 +1041,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"User details edited\",\n    \"status\": 200,\n    \"data\": {\n             \"createdOn\": \"Date\",\n             \"mobileNumber\": \"Number\",\n             \"email\": \"String\",\n             \"lastName\": \"String\",\n             \"firstName\": \"String\",\n             \"userId\": \"String\"\n            }\n\n}",
+          "content": " {\n    \"error\": false,\n    \"message\": \"User details edited\",\n    \"status\": 200,\n    \"data\": {\n             \"requested\": Object.type(Array),  \n             \"request\": Object.type(Array),  \n             \"friends\": Object.type(Array),\n             \"createdOn\": \"Date\",\n             \"mobileNumber\": \"Number\",\n             \"email\": \"String\",\n             \"lastName\": \"String\",\n             \"firstName\": \"String\",\n             \"userId\": \"String\"\n            }\n\n}",
           "type": "object"
         }
       ]
@@ -1236,6 +1061,72 @@ define({ "api": [
   },
   {
     "type": "put",
+    "url": "/api/v1/users/:userId/addAsFriend",
+    "title": "Add as Friend",
+    "group": "users",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "authToken",
+            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "request",
+            "description": "<p>User Id of the user which is to be added to friend's list. (body params) (required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>User Id of the user. (body params) (required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "myResponse",
+            "description": "<p>shows error status, message, http status code, result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n   \"error\": false,\n   \"message\": \"Friend added successfully\",\n   \"status\": 200,\n   \"data\": null\n}",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Add To Friends Array\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user.js",
+    "groupTitle": "users",
+    "name": "PutApiV1UsersUseridAddasfriend"
+  },
+  {
+    "type": "put",
     "url": "/api/v1/users/:userId/edit",
     "title": "Edit",
     "group": "users",
@@ -1243,6 +1134,13 @@ define({ "api": [
     "parameter": {
       "fields": {
         "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "authToken",
+            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
+          },
           {
             "group": "Parameter",
             "type": "string",
@@ -1289,7 +1187,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " {\n    \"error\": false,\n    \"message\": \"User details edited\",\n    \"status\": 200,\n    \"data\": {\n       \"authToken\": \"String\",\n        \"userDetails\": {\n        \"createdOn\":\"Date\",    \n        \"mobileNumber\": \"String\",\n        \"email\": \"String\",\n        \"lastName\": \"String\",\n        \"firstName\": \"String\",\n        \"userId\": \"String\"\n   }\n\n}",
+          "content": " {\n    \"error\": false,\n    \"message\": \"User details edited\",\n    \"status\": 200,\n    \"data\": {\n        \"authToken\": \"String\",\n        \"userDetails\": {\n        \"requested\": Object.type(Array),  \n        \"request\": Object.type(Array),  \n        \"friends\": Object.type(Array),\n        \"createdOn\":\"Date\",    \n        \"mobileNumber\": \"String\",\n        \"email\": \"String\",\n        \"lastName\": \"String\",\n        \"firstName\": \"String\",\n        \"userId\": \"String\"\n   }\n\n}",
           "type": "object"
         }
       ]
@@ -1306,5 +1204,137 @@ define({ "api": [
     "filename": "app/routes/user.js",
     "groupTitle": "users",
     "name": "PutApiV1UsersUseridEdit"
+  },
+  {
+    "type": "put",
+    "url": "/api/v1/users/:userId/request",
+    "title": "Request",
+    "group": "users",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "authToken",
+            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>User Id of the user. (body params) (required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "request",
+            "description": "<p>User Id of the user which is to be requested. (body params) (required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "myResponse",
+            "description": "<p>shows error status, message, http status code, result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n   \"error\": false,\n   \"message\": \"Successfully sent request\",\n   \"status\": 200,\n   \"data\": null\n}",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Request\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user.js",
+    "groupTitle": "users",
+    "name": "PutApiV1UsersUseridRequest"
+  },
+  {
+    "type": "put",
+    "url": "/api/v1/users/:userId/requested",
+    "title": "Requested",
+    "group": "users",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "authToken",
+            "description": "<p>The authToken for authentication. (Send authToken as query params)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "requested",
+            "description": "<p>User Id of the user which is to be requested. (body params) (required)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>User Id of the user. (body params) (required)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "myResponse",
+            "description": "<p>shows error status, message, http status code, result.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n   \"error\": false,\n   \"message\": \"Successfully sent request\",\n   \"status\": 200,\n   \"data\": null\n}",
+          "type": "object"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "\n{\n  \"error\": true,\n  \"message\": \"Failed To Request\",\n  \"status\": 500,\n  \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/routes/user.js",
+    "groupTitle": "users",
+    "name": "PutApiV1UsersUseridRequested"
   }
 ] });
