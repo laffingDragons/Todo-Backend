@@ -338,4 +338,8 @@ module.exports.setRouter = (app) => {
 
    app.post(`${baseUrl}/invitation`, userController.sendInvite);
 
+   app.post(`${baseUrl}/addInvitedFriend`, userController.addInvitedFriend);
+
+   app.post(`${baseUrl}/unFriend`, userController.unFriend);
+
 }

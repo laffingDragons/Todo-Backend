@@ -12,8 +12,6 @@ const HistoryModel = mongoose.model('History');
 //Getting all task
 let getAllTask = (req, res) => {
 
-    let count
-
 
     TaskModel.find()
         .select(' -__v -_id')
@@ -30,7 +28,7 @@ let getAllTask = (req, res) => {
                 res.send(apiResponse)
             } else {
 
-                let apiResponse = response.generate(false, 'All Task Details Found', count, result);
+                let apiResponse = response.generate(false, 'All Task Details Found', 200, result);
                 res.send(apiResponse);
             }
         })

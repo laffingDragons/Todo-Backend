@@ -126,10 +126,10 @@ let request = (req, res) => {
 }
 
 // adding to requested to own list
-let requested = (req, res) =>{
+let requested = (req, res) => {
 
     let options = { $addToSet: { requested: req.params.userId } }
-    UserModel.update({ 'userId': req.body.request   }, options).exec((err, result) => {
+    UserModel.update({ 'userId': req.body.request }, options).exec((err, result) => {
         if (err) {
             console.log(err)
             logger.error(err.message, 'userController: Database error', 10)
@@ -148,8 +148,8 @@ let requested = (req, res) =>{
 let addAsFriend = (req, res) => {
 
     // adding user's request to friends array 
-    let addUserToFriendsArray = () =>{
-        return new Promise((resolve, reject) =>{
+    let addUserToFriendsArray = () => {
+        return new Promise((resolve, reject) => {
 
             let options = { $addToSet: { friends: req.body.request } }
             UserModel.update({ 'userId': req.params.userId }, options).exec((err, result) => {
@@ -168,11 +168,11 @@ let addAsFriend = (req, res) => {
     }
 
     // adding user to his friend's  "friends" array
-    let addToFriendsArray = () =>{
-        return new Promise((resolve, reject) =>{
+    let addToFriendsArray = () => {
+        return new Promise((resolve, reject) => {
 
             let options = { $addToSet: { friends: req.params.userId } }
-            UserModel.update({ 'userId': req.body.request}, options).exec((err, result) => {
+            UserModel.update({ 'userId': req.body.request }, options).exec((err, result) => {
                 if (err) {
                     console.log(err)
                     logger.error(err.message, 'userController: Database error', 10)
@@ -189,10 +189,10 @@ let addAsFriend = (req, res) => {
 
 
     // removing user from requested array
-    let removeFromRequest = () =>{
-        return new Promise((resolve, reject) =>{
+    let removeFromRequest = () => {
+        return new Promise((resolve, reject) => {
 
-            let options = { $pull: { request : req.body.request} }
+            let options = { $pull: { request: req.body.request } }
             UserModel.update({ 'userId': req.params.userId }, options).exec((err, result) => {
                 if (err) {
                     console.log(err)
@@ -210,11 +210,11 @@ let addAsFriend = (req, res) => {
 
 
     // removing user from friend's request array
-    let removeFromRequested = () =>{
-        return new Promise((resolve, reject) =>{
+    let removeFromRequested = () => {
+        return new Promise((resolve, reject) => {
 
             let options = { $pull: { requested: req.params.userId } }
-            UserModel.update({ 'userId': req.body.request}, options).exec((err, result) => {
+            UserModel.update({ 'userId': req.body.request }, options).exec((err, result) => {
                 if (err) {
                     console.log(err)
                     logger.error(err.message, 'userController: Database error', 10)
@@ -230,18 +230,18 @@ let addAsFriend = (req, res) => {
     }
 
     addUserToFriendsArray(req, res)
-    .then(addToFriendsArray)
-    .then(removeFromRequested)
-    .then(removeFromRequest)
-    .then((resolve) => {
-       
-        let apiResponse = response.generate(false, 'Friend added successfully', 200, resolve)
-        res.send(apiResponse)
-    })
-    .catch((err) => {
-        console.log(err);
-        res.send(err);
-    })
+        .then(addToFriendsArray)
+        .then(removeFromRequested)
+        .then(removeFromRequest)
+        .then((resolve) => {
+
+            let apiResponse = response.generate(false, 'Friend added successfully', 200, resolve)
+            res.send(apiResponse)
+        })
+        .catch((err) => {
+            console.log(err);
+            res.send(err);
+        })
 
 
 }
@@ -250,11 +250,11 @@ let addAsFriend = (req, res) => {
 //find all the friends of the user
 let findFriends = (req, res) => {
 
-    
+
     let friends = req.body.friends.split(",");
     console.log('\x1b[36m', friends, '\x1b[0m');
 
-    UserModel.find({ 'userId': friends  })
+    UserModel.find({ 'userId': friends })
         .select('-password -__v -_id')
         .lean()
         .exec((err, result) => {
@@ -476,7 +476,7 @@ let forgotPasswordFunction = (req, res) => {
 
     }
 
-    
+
 
 
     validateUserInputForForgotPassword(req, res)
@@ -495,24 +495,100 @@ let forgotPasswordFunction = (req, res) => {
 
 
 //send Invitation mail.
-let sendInvite = (req, res)=>{
+let sendInvite = (req, res) => {
 
 
     UserModel.findOne({ userId: req.query.userId })
-    .exec((err, validEmail) => {
-        if (err) {
-            logger.error(err.message, 'userController: Forgot password controller', 10)
-            let apiResponse = response.generate(true, 'Failed To find User', 500, null)
-            res.send(apiResponse)
-        } else {
+        .exec((err, validEmail) => {
+            if (err) {
+                logger.error(err.message, 'userController: Forgot password controller', 10)
+                let apiResponse = response.generate(true, 'Failed To find User', 500, null)
+                res.send(apiResponse)
+            } else {
 
-            mail.invitationEmail(validEmail.userId, validEmail.firstName, req.query.email); //code for sending email to reset password
-            let apiResponse = response.generate(false, 'Email sent', 200, null)
-            res.send(apiResponse);
-            
-        }
+                mail.invitationEmail(validEmail.userId, validEmail.firstName, req.query.email); //code for sending email to reset password
+                let apiResponse = response.generate(false, 'Email sent', 200, null)
+                res.send(apiResponse);
 
-    })
+            }
+
+        })
+
+}
+
+//adding invited friend to friends array on both the users
+let addInvitedFriend = (req, res) => {
+
+    let options = { $push: { friends: req.query.inviteId } }
+
+    UserModel.update({ userId: req.query.userId }, options)
+        .exec((err, result) => {
+            if (err) {
+                logger.error(err.message, 'userController: Adding invited friend ', 10)
+                let apiResponse = response.generate(true, 'Failed To find User', 500, null)
+                res.send(apiResponse)
+            } else {
+
+                // adding friend to inivited user
+
+                UserModel.update({ userId: req.query.inviteId }, { $push: { friends: req.query.userId } } )
+                    .exec((err, result) => {
+                        if (err) {
+                            logger.error(err.message, 'userController: Adding invited friend ', 10)
+                            let apiResponse = response.generate(true, 'Failed To find User', 500, null)
+                            res.send(apiResponse)
+                        } else {
+                           
+
+                            let apiResponse = response.generate(false, `Friend added to friends list`, 200, null)
+                            res.send(apiResponse)
+
+                        }
+
+                    })//end of adding friend
+
+            }
+
+        })//end of adding friend for invited user
+
+
+}
+
+//Unfriend  friend from friends array on both the users
+let unFriend = (req, res) => {
+    console.log('\x1b[36m',  req.query.friendId, req.query.userId, '\x1b[0m');
+    let options = { $pull: { friends: req.query.friendId } }
+
+    UserModel.update({ userId: req.query.userId }, options)
+        .exec((err, result) => {
+            if (err) {
+                logger.error(err.message, 'userController: Removing friend ', 10)
+                let apiResponse = response.generate(true, 'Failed To find User', 500, null)
+                res.send(apiResponse)
+            } else {
+
+                // Removing friend from user doc
+
+                UserModel.update({ userId: req.query.friendId }, { $pull: { friends: req.query.userId } } )
+                    .exec((err, result) => {
+                        if (err) {
+                            logger.error(err.message, 'userController: Removing friend ', 10)
+                            let apiResponse = response.generate(true, 'Failed To find User', 500, null)
+                            res.send(apiResponse)
+                        } else {
+                           
+
+                            let apiResponse = response.generate(false, `Friend removed from friends list`, 200, null)
+                            res.send(apiResponse)
+
+                        }
+
+                    })//end of Removing friend
+
+            }
+
+        })//end of Removing friend for user
+
 
 }
 
@@ -721,10 +797,12 @@ module.exports = {
     getSingleUser: getSingleUser,
     loginFunction: loginFunction,
     logout: logout,
-    request:request,
-    requested : requested,
+    request: request,
+    requested: requested,
     addAsFriend: addAsFriend,
     findFriends: findFriends,
-    sendInvite: sendInvite
+    sendInvite: sendInvite,
+    addInvitedFriend: addInvitedFriend,
+    unFriend: unFriend
 
 }// end exports
