@@ -11,7 +11,7 @@ appConfig.db = {
 appConfig.apiVersion = '/api/v1';
 
 nodeMailer.email=
-nodeMailer.password =
+nodeMailer.password = 
 
 module.exports = {
     port: appConfig.port,
