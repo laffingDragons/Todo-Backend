@@ -90,7 +90,6 @@ let setServer = (server) => {
                 eventEmitter.emit('save-notify', data);
 
             }, 2000)
-
             myIo.emit(data.receiverId, data)
 
         });//end of notify evnent
