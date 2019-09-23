@@ -614,6 +614,10 @@ let changePasswordFunction = (req, res) => {
 
 // start of login function 
 let loginFunction = (req, res) => {
+    console.log(`>>>>>>>`,`In`);
+    console.log(`>>>>>>>`,ouch);
+    console.log(`>>>>>>>`,`ouch`);
+    
     let findUser = () => {
         return new Promise((resolve, reject) => {
             if (req.body.email) {
