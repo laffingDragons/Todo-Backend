@@ -1,7 +1,7 @@
 let appConfig = {};
 let nodeMailer = {};
 
-appConfig.port = 3000;
+appConfig.port = process.env.PORT || 3000;
 appConfig.allowedCorsOrigin = "*";
 appConfig.env = "dev";
 appConfig.db = {
