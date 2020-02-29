@@ -10,8 +10,8 @@ appConfig.db = {
   }
 appConfig.apiVersion = '/api/v1';
 
-nodeMailer.email="cooldudeakshu@gmail.com";
-nodeMailer.password = "Mlg@420^";
+nodeMailer.email="your email";
+nodeMailer.password = "^";
 
 module.exports = {
     port: appConfig.port,
